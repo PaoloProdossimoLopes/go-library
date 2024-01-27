@@ -1,23 +1,18 @@
-package middleware
+package server
 
 import (
 	"fmt"
 	"net/http"
 
 	"github.com/PaoloProdossimoLopes/go-library/logger"
-	"github.com/PaoloProdossimoLopes/go-library/server"
 )
 
-type HandlerBlock func(hw http.ResponseWriter, hr *http.Request)
-
-func HttpCoordinatorMethodMiddleware() HandlerBlock {
+func HttpCoordinatorProxy() HandlerBlock {
 	return func(w http.ResponseWriter, r *http.Request) {
 		requestMethod := r.Method
 		requestPath := r.URL.Path
 
-		routeIdentifier := buildRouteRegisterIdentifier(requestMethod, requestPath)
-
-		if registeredRoutes[routeIdentifier] == nil {
+		if route.getRouteHandler(requestMethod, requestPath) == nil {
 			errorMessage := fmt.Sprintf(
 				"Route '%v' not found for method %v.",
 				requestPath,
@@ -25,7 +20,7 @@ func HttpCoordinatorMethodMiddleware() HandlerBlock {
 			)
 			logger.Error(errorMessage)
 			w.WriteHeader(http.StatusNotFound)
-			w.Write(server.ResponseError{
+			w.Write(ResponseError{
 				Error:      "Not Found",
 				Reason:     errorMessage,
 				StatusCode: http.StatusNotFound,
@@ -33,7 +28,7 @@ func HttpCoordinatorMethodMiddleware() HandlerBlock {
 			return
 		}
 
-		registeredRoutes[routeIdentifier](w, r)
+		route.getRouteHandler(requestMethod, requestPath)(w, r)
 		return
 	}
 }
