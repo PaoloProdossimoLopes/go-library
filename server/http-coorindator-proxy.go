@@ -12,6 +12,8 @@ func HttpCoordinatorProxy() HandlerBlock {
 		requestMethod := r.Method
 		requestPath := r.URL.Path
 
+		fmt.Println("|->", requestMethod, requestPath)
+
 		if route.getRouteHandler(requestMethod, requestPath) == nil {
 			errorMessage := fmt.Sprintf(
 				"Route '%v' not found for method %v.",

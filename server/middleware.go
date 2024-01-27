@@ -16,13 +16,13 @@ type Rout struct {
 	paths         map[string]bool
 }
 
-func (r *Rout) register(method string, path string, handler HandlerBlock) {
+func (r *Rout) register(method, path string, handler HandlerBlock) {
 	identifier := buildRouteRegisterIdentifier(method, path)
 	r.registrations[identifier] = handler
 	r.paths[path] = true
 }
 
-func (r *Rout) getRouteHandler(method string, path string) HandlerBlock {
+func (r *Rout) getRouteHandler(method, path string) HandlerBlock {
 	identifier := buildRouteRegisterIdentifier(method, path)
 	return r.registrations[identifier]
 }

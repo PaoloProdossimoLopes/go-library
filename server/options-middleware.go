@@ -5,5 +5,5 @@ import (
 )
 
 func Options(path string, handler HandlerBlock) {
-	httpRouteHandler(http.MethodGet, path, handler)
+	httpRouteHandler(http.MethodOptions, path, handler)
 }
