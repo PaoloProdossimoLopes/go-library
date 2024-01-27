@@ -22,14 +22,14 @@ type Book struct {
 var BooksRepository BookRepository
 
 func Init() {
-	BooksRepository = InMemoryBookRepository{}
+	BooksRepository = &InMemoryBookRepository{}
 }
 
 type InMemoryBookRepository struct {
 	books []Book
 }
 
-func (r InMemoryBookRepository) CreateNewBook(book Book) (Book, error) {
+func (r *InMemoryBookRepository) CreateNewBook(book Book) (Book, error) {
 	book.ID = uuid.New().String()
 	book.CreatedAt = time.Now().String()
 	book.UpdatedAt = time.Now().String()
@@ -39,6 +39,6 @@ func (r InMemoryBookRepository) CreateNewBook(book Book) (Book, error) {
 	return book, nil
 }
 
-func (r InMemoryBookRepository) GetAllBooks() ([]Book, error) {
+func (r *InMemoryBookRepository) GetAllBooks() ([]Book, error) {
 	return r.books, nil
 }
