@@ -7,13 +7,14 @@ import (
 
 	"github.com/PaoloProdossimoLopes/go-library/enviroment"
 	"github.com/PaoloProdossimoLopes/go-library/logger"
+	"github.com/PaoloProdossimoLopes/go-library/wellcome"
 )
 
 func main() {
 	prepareEnviromentVariables()
 
 	const API = "/api/v1"
-	http.HandleFunc(API+"/", getWellcomeHandler)
+	http.HandleFunc(API+"/", Get(wellcome.GetWellcomeHandler))
 	http.ListenAndServe(enviroment.Enviroment.GetPort(), nil)
 }
 
@@ -24,46 +25,29 @@ func prepareEnviromentVariables() {
 	}
 }
 
-type wellcome struct {
-	Message string `json:"message"`
-}
+func Get(handler func(hw http.ResponseWriter, hr *http.Request)) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			logger.Error(fmt.Sprintf(
+				"Invalid HTTP method at route '%v' with method '%v'.",
+				r.RequestURI, r.Method))
+			w.WriteHeader(http.StatusMethodNotAllowed)
 
-type ResponseError struct {
-	Error      string `json:"error"`
-	Reason     string `json:"reason"`
-	StatusCode int    `json:"status_code"`
-}
+			responseErrorData, responseErrorMarshalError := json.Marshal(wellcome.ResponseError{
+				Error:      "Method HTTP not allowed",
+				Reason:     fmt.Sprintf("Method HTTP '%s' not allowed", r.Method),
+				StatusCode: http.StatusMethodNotAllowed,
+			})
+			if responseErrorMarshalError != nil {
+				logger.Error("Problem to marshal `ErrorResponse` struct")
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
 
-func getWellcomeHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		logger.Error(fmt.Sprintf(
-			"Invalid HTTP method at route '%v' with method '%v'.",
-			r.RequestURI, r.Method))
-		notAllowedStatusCode := http.StatusMethodNotAllowed
-		w.WriteHeader(notAllowedStatusCode)
-
-		responseErrorData, responseErrorMarshalError := json.Marshal(ResponseError{
-			Error:      "Method HTTP not allowed",
-			Reason:     fmt.Sprintf("Method HTTP '%s' not allowed", r.Method),
-			StatusCode: notAllowedStatusCode,
-		})
-		if responseErrorMarshalError != nil {
-			logger.Error("Problem to marshal `ErrorResponse` struct")
-			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(responseErrorData))
 			return
 		}
 
-		w.Write([]byte(responseErrorData))
-		return
+		handler(w, r)
 	}
-
-	wellcome := wellcome{"Wellcome to my API"}
-	wellcomeData, wellcomeMarshalError := json.Marshal(wellcome)
-	if wellcomeMarshalError != nil {
-		logger.Error("Problem to marshal wellcome message struct")
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.Write(wellcomeData)
 }
