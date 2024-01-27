@@ -2,12 +2,21 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
+
+	"github.com/PaoloProdossimoLopes/go-library/enviroment"
 )
 
 func main() {
-	http.HandleFunc("/", getWellcome)
-	http.ListenAndServe(":8080", nil)
+	if initEnvError := enviroment.Init(); initEnvError != nil {
+		log.Println(initEnvError.Error())
+		panic(initEnvError)
+	}
+
+	const api = "/api/v1"
+	http.HandleFunc(api+"/", getWellcome)
+	http.ListenAndServe(enviroment.Enviroment.GetPort(), nil)
 }
 
 type Wellcome struct {
