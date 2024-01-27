@@ -5,16 +5,11 @@ import (
 	"net/http"
 
 	"github.com/PaoloProdossimoLopes/go-library/logger"
+	"github.com/PaoloProdossimoLopes/go-library/server"
 )
 
 type wellcome struct {
 	Message string `json:"message"`
-}
-
-type ResponseError struct {
-	Error      string `json:"error"`
-	Reason     string `json:"reason"`
-	StatusCode int    `json:"status_code"`
 }
 
 func GetWellcomeHandler(w http.ResponseWriter, r *http.Request) {
@@ -23,6 +18,11 @@ func GetWellcomeHandler(w http.ResponseWriter, r *http.Request) {
 	if wellcomeMarshalError != nil {
 		logger.Error("Problem to marshal wellcome message struct")
 		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(server.ResponseError{
+			Error:      "Internal server error",
+			Reason:     wellcomeMarshalError.Error(),
+			StatusCode: http.StatusInternalServerError,
+		}.Marshal())
 		return
 	}
 
