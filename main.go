@@ -2,31 +2,36 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/PaoloProdossimoLopes/go-library/enviroment"
+	"github.com/PaoloProdossimoLopes/go-library/logger"
 )
 
 func main() {
-	if initEnvError := enviroment.Init(); initEnvError != nil {
-		log.Println(initEnvError.Error())
-		panic(initEnvError)
-	}
+	prepareEnviromentVariables()
 
-	const api = "/api/v1"
-	http.HandleFunc(api+"/", getWellcome)
+	const API = "/api/v1"
+	http.HandleFunc(API+"/", getWellcomeHandler)
 	http.ListenAndServe(enviroment.Enviroment.GetPort(), nil)
 }
 
-type Wellcome struct {
+func prepareEnviromentVariables() {
+	if initEnvError := enviroment.Init(); initEnvError != nil {
+		logger.Fatal(initEnvError.Error())
+		panic(initEnvError)
+	}
+}
+
+type wellcome struct {
 	Message string `json:"message"`
 }
 
-func getWellcome(w http.ResponseWriter, r *http.Request) {
-	wellcome := Wellcome{"Wellcome to my API"}
+func getWellcomeHandler(w http.ResponseWriter, r *http.Request) {
+	wellcome := wellcome{"Wellcome to my API"}
 	wellcomeData, wellcomeMarshalError := json.Marshal(wellcome)
 	if wellcomeMarshalError != nil {
+		logger.Error("Problem to marshal wellcome message struct")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

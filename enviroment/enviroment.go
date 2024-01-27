@@ -2,7 +2,6 @@ package enviroment
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -15,8 +14,7 @@ var (
 func Init() error {
 	loadDotEnvError := godotenv.Load(".env")
 	if loadDotEnvError != nil {
-		log.Fatalf("Erro ao carregar o arquivo .env: %v", loadDotEnvError)
-		return loadDotEnvError
+		return fmt.Errorf("Probleam to load '.env' file: %s", loadDotEnvError.Error())
 	}
 
 	hostPort, hostPortError := validateVariable("HOST_PORT")
