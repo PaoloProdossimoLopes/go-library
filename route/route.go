@@ -7,5 +7,4 @@ import (
 
 func Init() {
 	server.Get("/", wellcome.GetWellcomeHandler)
-	server.Post("/", wellcome.GetWellcomeHandler)
 }

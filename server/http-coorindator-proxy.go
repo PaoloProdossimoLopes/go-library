@@ -19,12 +19,11 @@ func HttpCoordinatorProxy() HandlerBlock {
 				requestMethod,
 			)
 			logger.Error(errorMessage)
-			w.WriteHeader(http.StatusNotFound)
-			w.Write(ResponseError{
+			SendErrorResponse(w, ResponseError{
 				Error:      "Not Found",
 				Reason:     errorMessage,
 				StatusCode: http.StatusNotFound,
-			}.Marshal())
+			})
 			return
 		}
 

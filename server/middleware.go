@@ -18,7 +18,6 @@ type Rout struct {
 
 func (r *Rout) register(method string, path string, handler HandlerBlock) {
 	identifier := buildRouteRegisterIdentifier(method, path)
-	println(method, path, identifier)
 	r.registrations[identifier] = handler
 	r.paths[path] = true
 }

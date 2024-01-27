@@ -21,3 +21,9 @@ func httpRouteHandler(httpMethod, path string, handler HandlerBlock) {
 
 	route.register(httpMethod, path, handler)
 }
+
+func SendErrorResponse(w http.ResponseWriter, response ResponseError) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(response.StatusCode)
+	w.Write(response.Marshal())
+}
