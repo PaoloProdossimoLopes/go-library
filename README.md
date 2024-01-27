@@ -22,3 +22,5 @@ client to perform some operations described better in the section named `Feature
 - dotenv
 - docker
 - mysql
+- swagger
+- logger
