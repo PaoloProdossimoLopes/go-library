@@ -9,10 +9,6 @@ import (
 	"github.com/PaoloProdossimoLopes/go-library/server"
 )
 
-type DeleteBookResponse struct {
-	Book BookResponse `json:"book"`
-}
-
 func DeleteBookHandler(w http.ResponseWriter, r *http.Request) {
 	bookId := r.URL.Query().Get("id")
 	if bookId == "" {

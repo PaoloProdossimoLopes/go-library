@@ -9,10 +9,6 @@ import (
 	"github.com/PaoloProdossimoLopes/go-library/server"
 )
 
-type UpdateBookResponse struct {
-	Book BookResponse `json:"book"`
-}
-
 type UpdateBookRequest struct {
 	Title  string `json:"title"`
 	Author string `json:"author"`

@@ -9,10 +9,6 @@ import (
 	"github.com/PaoloProdossimoLopes/go-library/server"
 )
 
-type GetAllBooksResponse struct {
-	Books []BookResponse `json:"books"`
-}
-
 func GetAllBooksHandler(w http.ResponseWriter, r *http.Request) {
 	books, booksResponseError := database.BooksRepository.GetAllBooks()
 	if booksResponseError != nil {
