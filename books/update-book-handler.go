@@ -57,15 +57,8 @@ func UpdateBookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	updatedBookResponseBytes, booksResponseMarshalError := json.Marshal(UpdateBookResponse{
-		Book: BookResponse{
-			ID:        updatedBookResponse.ID,
-			Title:     updatedBookResponse.Title,
-			Author:    updatedBookResponse.Author,
-			CreatedAt: updatedBookResponse.CreatedAt,
-			UpdatedAt: updatedBookResponse.UpdatedAt,
-		},
-	})
+	updatedBookResponseBytes, booksResponseMarshalError := json.Marshal(
+		bookToBookResponseRoot(*updatedBookResponse))
 	if booksResponseMarshalError != nil {
 		logger.Error("Problem to marshal books response model")
 		server.SendErrorResponse(w, server.ResponseError{

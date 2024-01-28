@@ -46,15 +46,8 @@ func CreateNewBookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createdBookResponseBytes, booksResponseMarshalError := json.Marshal(CreateNewBookResponse{
-		Book: BookResponse{
-			ID:        createdBookResponse.ID,
-			Title:     createdBookResponse.Title,
-			Author:    createdBookResponse.Author,
-			CreatedAt: createdBookResponse.CreatedAt,
-			UpdatedAt: createdBookResponse.UpdatedAt,
-		},
-	})
+	createdBookResponseBytes, booksResponseMarshalError := json.Marshal(
+		bookToBookResponseRoot(createdBookResponse))
 	if booksResponseMarshalError != nil {
 		logger.Error("Problem to marshal books response model")
 		server.SendErrorResponse(w, server.ResponseError{
