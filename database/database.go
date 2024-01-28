@@ -10,6 +10,7 @@ type BookRepository interface {
 	CreateNewBook(book Book) (Book, error)
 	GetAllBooks() ([]Book, error)
 	UpdateBook(book Book) (*Book, error)
+	DeleteBook(id string) (*Book, error)
 }
 
 type Book struct {
@@ -58,6 +59,17 @@ func (r *InMemoryBookRepository) UpdateBook(bk Book) (*Book, error) {
 			book.UpdatedAt = time.Now().String()
 
 			r.books[index] = book
+			return &book, nil
+		}
+	}
+
+	return nil, nil
+}
+
+func (r *InMemoryBookRepository) DeleteBook(id string) (*Book, error) {
+	for index, book := range r.books {
+		if book.ID == id {
+			r.books = append(r.books[:index], r.books[index+1:]...)
 			return &book, nil
 		}
 	}

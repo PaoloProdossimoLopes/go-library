@@ -10,4 +10,5 @@ func configureBooksRoutes() {
 	server.Get(booksPath, books.GetAllBooksHandler)
 	server.Patch(booksPath, books.UpdateBookHandler)
 	server.Post(booksPath, books.CreateNewBookHandler)
+	server.Delete(booksPath, books.DeleteBookHandler)
 }
