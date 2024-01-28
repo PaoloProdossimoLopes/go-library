@@ -9,11 +9,6 @@ import (
 	"github.com/PaoloProdossimoLopes/go-library/server"
 )
 
-type UpdateBookRequest struct {
-	Title  string `json:"title"`
-	Author string `json:"author"`
-}
-
 func UpdateBookHandler(w http.ResponseWriter, r *http.Request) {
 	bookId := r.URL.Query().Get("id")
 	if bookId == "" {
@@ -26,7 +21,7 @@ func UpdateBookHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var updateBookRequest UpdateBookRequest
+	var updateBookRequest BookRequest
 	decodeError := json.NewDecoder(r.Body).Decode(&updateBookRequest)
 	if decodeError != nil {
 		logger.Error("Problem to decode update book request")

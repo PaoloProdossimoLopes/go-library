@@ -9,14 +9,9 @@ import (
 	"github.com/PaoloProdossimoLopes/go-library/server"
 )
 
-type CreateNewBookRequest struct {
-	Title  string `json:"title"`
-	Author string `json:"author"`
-}
-
 func CreateNewBookHandler(w http.ResponseWriter, r *http.Request) {
 
-	var createNewBookRequest CreateNewBookRequest
+	var createNewBookRequest BookRequest
 	decodeError := json.NewDecoder(r.Body).Decode(&createNewBookRequest)
 	if decodeError != nil {
 		logger.Error("Problem to decode create new book request")
